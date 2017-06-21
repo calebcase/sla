@@ -4,3 +4,6 @@
 [submodule "vendor/github.com/stripe/veneur"]
 	path = vendor/github.com/stripe/veneur
 	url = https://github.com/stripe/veneur
+[submodule "vendor/github.com/felixge/pidctrl"]
+	path = vendor/github.com/felixge/pidctrl
+	url = https://github.com/felixge/pidctrl

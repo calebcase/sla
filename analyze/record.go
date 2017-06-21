@@ -2,11 +2,9 @@ package analyze
 
 import (
 	"fmt"
-	"math"
 
 	"github.com/calebcase/sla/uow"
 
-	log "github.com/inconshreveable/log15"
 	"github.com/stripe/veneur/tdigest"
 )
 
@@ -70,48 +68,6 @@ func (r *Record) Quantiles(quantile float64) []float64 {
 	}
 
 	return results
-}
-
-// Truncate the current record keeping by creating new digests and only
-// inserting the quantile from the current set.
-func (r *Record) Truncate(quantile float64) {
-	log.Debug("Truncating", "quantile", quantile)
-
-	/*
-		DNS := tdigest.NewMerging(100, false)
-		Connection := tdigest.NewMerging(100, false)
-		TLS := tdigest.NewMerging(100, false)
-		Request := tdigest.NewMerging(100, false)
-		Delay := tdigest.NewMerging(100, false)
-		Response := tdigest.NewMerging(100, false)
-	*/
-	Duration := tdigest.NewMerging(100, false)
-
-	/*
-		DNS.Add(r.DNS.Quantile(quantile), 1.0)
-		Connection.Add(r.Connection.Quantile(quantile), 1.0)
-		TLS.Add(r.TLS.Quantile(quantile), 1.0)
-		Request.Add(r.Request.Quantile(quantile), 1.0)
-		Delay.Add(r.Delay.Quantile(quantile), 1.0)
-		Response.Add(r.Response.Quantile(quantile), 1.0)
-	*/
-	last := r.Duration.Quantile(quantile)
-	if math.IsNaN(last) {
-		return
-	}
-
-	log.Debug("Last Duration", "last", last)
-	Duration.Add(last, 1.0)
-
-	/*
-		r.DNS = DNS
-		r.Connection = Connection
-		r.TLS = TLS
-		r.Request = Request
-		r.Delay = Delay
-		r.Response = Response
-	*/
-	r.Duration = Duration
 }
 
 func (r *Record) String() string {
