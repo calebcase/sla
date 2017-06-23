@@ -5,8 +5,39 @@ import (
 
 	"github.com/calebcase/sla/uow"
 
+	"github.com/gonum/stat"
 	"github.com/stripe/veneur/tdigest"
 )
+
+type Circular struct {
+	Current int
+	Data    []float64
+}
+
+func NewCircular(size int) *Circular {
+	circular := Circular{
+		Data: make([]float64, size),
+	}
+
+	return &circular
+}
+
+func (c *Circular) Add(data float64) {
+	c.Data[c.Current] = data
+	c.Current += 1
+
+	if c.Current >= len(c.Data) {
+		c.Current = 0
+	}
+}
+
+func (c *Circular) Quantile(quantile float64) float64 {
+	data := make([]float64, len(c.Data))
+	copy(data, c.Data)
+	stat.SortWeighted(data, nil)
+
+	return stat.Quantile(quantile, stat.Empirical, data, nil)
+}
 
 type Record struct {
 	DNS        *tdigest.MergingDigest
@@ -16,6 +47,8 @@ type Record struct {
 	Delay      *tdigest.MergingDigest
 	Response   *tdigest.MergingDigest
 	Duration   *tdigest.MergingDigest
+
+	Trailing *Circular
 }
 
 func NewRecord() *Record {
@@ -27,6 +60,8 @@ func NewRecord() *Record {
 		Delay:      tdigest.NewMerging(100, false),
 		Response:   tdigest.NewMerging(100, false),
 		Duration:   tdigest.NewMerging(100, false),
+
+		Trailing: NewCircular(10),
 	}
 
 	return record
@@ -40,6 +75,8 @@ func (r *Record) AddRound(round *uow.Round) {
 	r.Delay.Add(round.Timing.Delay.Seconds(), 1.0)
 	r.Response.Add(round.Timing.Response.Seconds(), 1.0)
 	r.Duration.Add(round.Timing.Duration.Seconds(), 1.0)
+
+	r.Trailing.Add(round.Timing.Duration.Seconds())
 }
 
 func (r *Record) Header() []string {

@@ -7,3 +7,21 @@
 [submodule "vendor/github.com/felixge/pidctrl"]
 	path = vendor/github.com/felixge/pidctrl
 	url = https://github.com/felixge/pidctrl
+[submodule "vendor/github.com/gonum/stat"]
+	path = vendor/github.com/gonum/stat
+	url = https://github.com/gonum/stat
+[submodule "vendor/github.com/gonum/floats"]
+	path = vendor/github.com/gonum/floats
+	url = https://github.com/gonum/floats
+[submodule "vendor/github.com/gonum/matrix"]
+	path = vendor/github.com/gonum/matrix
+	url = https://github.com/gonum/matrix
+[submodule "vendor/github.com/gonum/blas"]
+	path = vendor/github.com/gonum/blas
+	url = https://github.com/gonum/blas
+[submodule "vendor/github.com/gonum/internal"]
+	path = vendor/github.com/gonum/internal
+	url = https://github.com/gonum/internal
+[submodule "vendor/github.com/gonum/lapack"]
+	path = vendor/github.com/gonum/lapack
+	url = https://github.com/gonum/lapack

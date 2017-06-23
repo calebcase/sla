@@ -22,9 +22,6 @@ func cannot(err error) {
 }
 
 func main() {
-	// Summary Stats
-	record := analyze.NewRecord()
-
 	// Job Control
 	requesters := &sync.WaitGroup{}
 	reviewers := &sync.WaitGroup{}
@@ -51,7 +48,7 @@ func main() {
 
 	{
 		logger := log.New("analyzer", "master")
-		go analyze.New(logger, analyzers, analysis, record, slo, &delay).Work()
+		go analyze.New(logger, analyzers, analysis, slo, &delay).Work()
 	}
 
 	// Read in our jobs to be done.
